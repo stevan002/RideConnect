@@ -5,10 +5,10 @@ import com.rideconnect.server.repository.UserRepository;
 import com.rideconnect.server.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/user")
@@ -21,5 +21,11 @@ public class UserController {
     public ResponseEntity<?> registerUser(@RequestBody RegisterRequest request){
         userService.registerUser(request);
         return ResponseEntity.ok("User successfully registered");
+    }
+
+    @GetMapping("/profile")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> profileUser(Principal principal){
+        return ResponseEntity.ok().body(userService.getProfile(principal.getName()));
     }
 }

@@ -1,5 +1,6 @@
 package com.rideconnect.server.service;
 
+import com.rideconnect.server.dto.ProfileResponse;
 import com.rideconnect.server.dto.RegisterRequest;
 import com.rideconnect.server.exception.BadRequestException;
 import com.rideconnect.server.model.User;
@@ -9,10 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import static com.rideconnect.server.constant.ErrorMessage.EMAIL_ALREADY_EXISTS;
-import static com.rideconnect.server.constant.ErrorMessage.PHONE_NUMBER_ALREADY_EXISTS;
-import static com.rideconnect.server.constant.FieldName.EMAIL_FIELD;
-import static com.rideconnect.server.constant.FieldName.PHONE_NUMBER_FIELD;
+import static com.rideconnect.server.constant.ErrorMessage.*;
+import static com.rideconnect.server.constant.FieldName.*;
 import static com.rideconnect.server.mapper.UserMapper.USER_MAPPER;
 
 @Service
@@ -36,5 +35,12 @@ public class UserService {
         user.setRole(UserRole.USER);
 
         userRepository.save(user);
+    }
+
+    public ProfileResponse getProfile(String email){
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new BadRequestException(USER_FIELD , USER_NOT_FOUND));
+
+        return USER_MAPPER.getProfile(user);
     }
 }

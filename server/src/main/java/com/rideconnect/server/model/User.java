@@ -52,7 +52,7 @@ public class User implements UserDetails {
     private String phoneNumber;
 
     @Column(unique = true)
-    private String photo;
+    private String imageUrl;
 
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Role cannot be null")
