@@ -52,7 +52,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         .getBody();
 
                 String role = claims.get("role", String.class);
-                log.info("Role extracted from token: " + role);
+//                log.info("Role extracted from token: " + role);
 
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, Collections.singleton(new SimpleGrantedAuthority(role))

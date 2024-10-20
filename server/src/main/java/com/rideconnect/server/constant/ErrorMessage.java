@@ -2,6 +2,7 @@ package com.rideconnect.server.constant;
 
 public class ErrorMessage {
     public static final String PASSWORD_INCORRECT = "Password is incorrect";
+    public static final String PASSWORD_NOT_MATCH = "Password does not match";
     public static final String EMAIL_INCORRECT = "Email is incorrect";
     public static final String NOT_BLANK = "Field is blank";
     public static final String EMAIL_ALREADY_EXISTS = "Email already exists";
