@@ -1,5 +1,6 @@
 package com.rideconnect.server.controller;
 
+import com.rideconnect.server.dto.ApiResponse;
 import com.rideconnect.server.dto.ChangePasswordRequest;
 import com.rideconnect.server.dto.RegisterRequest;
 import com.rideconnect.server.service.UserService;
@@ -30,32 +31,34 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest request){
-        userService.registerUser(request);
-        return ResponseEntity.ok("User successfully registered");
+    public ResponseEntity<ApiResponse> registerUser(@RequestBody RegisterRequest request) {
+        ApiResponse response = userService.registerUser(request);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/profile")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> profileUser(Principal principal){
+    public ResponseEntity<?> profileUser(Principal principal) {
         return ResponseEntity.ok().body(userService.getProfile(principal.getName()));
     }
 
     @PutMapping("/change-password")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request, Principal principal){
-        return ResponseEntity.ok().body(userService.changePassword(request, principal.getName()));
+    public ResponseEntity<ApiResponse> changePassword(@RequestBody ChangePasswordRequest request, Principal principal) {
+        ApiResponse response = userService.changePassword(request, principal.getName());
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/upload-profile-image")
-    public ResponseEntity<String> uploadProfileImage(
+    public ResponseEntity<ApiResponse> uploadProfileImage(
             Principal principal,
             @RequestParam("file") MultipartFile file) {
         try {
             String fileType = file.getContentType();
             assert fileType != null;
             if (!fileType.equals("image/jpeg") && !fileType.equals("image/png")) {
-                return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body("Invalid file type. Only JPEG and PNG are supported.");
+                return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                        .body(new ApiResponse("Invalid file type. Only JPEG and PNG are supported.", false));
             }
 
             Path uploadDir = Paths.get(UPLOAD_DIR);
@@ -70,9 +73,10 @@ public class UserController {
             String imageUrl = "/uploads/" + filename;
             userService.updateUserImage(principal.getName(), imageUrl);
 
-            return ResponseEntity.ok("Profile image uploaded successfully.");
+            return ResponseEntity.ok(new ApiResponse("Profile image uploaded successfully.", true));
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving file: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error saving file: " + e.getMessage(), false));
         }
     }
 
@@ -93,5 +97,4 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
-
 }

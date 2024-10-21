@@ -1,5 +1,6 @@
 package com.rideconnect.server.service;
 
+import com.rideconnect.server.dto.ApiResponse;
 import com.rideconnect.server.dto.ChangePasswordRequest;
 import com.rideconnect.server.dto.ProfileResponse;
 import com.rideconnect.server.dto.RegisterRequest;
@@ -8,7 +9,6 @@ import com.rideconnect.server.model.User;
 import com.rideconnect.server.model.enumeration.UserRole;
 import com.rideconnect.server.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +23,9 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public void registerUser(RegisterRequest userRequest){
-        if(userRepository.existsByEmail(userRequest.getEmail())){
-            throw new BadRequestException(EMAIL_FIELD , EMAIL_ALREADY_EXISTS);
+    public ApiResponse registerUser(RegisterRequest userRequest) {
+        if (userRepository.existsByEmail(userRequest.getEmail())) {
+            throw new BadRequestException(EMAIL_FIELD, EMAIL_ALREADY_EXISTS);
         }
 
         if (userRepository.existsByPhoneNumber(userRequest.getPhoneNumber())) {
@@ -37,36 +37,38 @@ public class UserService {
         user.setRole(UserRole.USER);
 
         userRepository.save(user);
+        return new ApiResponse("User successfully registered", true);
     }
 
-    public ProfileResponse getProfile(String email){
+    public ProfileResponse getProfile(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BadRequestException(USER_FIELD , USER_NOT_FOUND));
+                .orElseThrow(() -> new BadRequestException(USER_FIELD, USER_NOT_FOUND));
 
         return USER_MAPPER.getProfile(user);
     }
 
-    public String changePassword(ChangePasswordRequest request, String name) {
+    public ApiResponse changePassword(ChangePasswordRequest request, String name) {
         User user = userRepository.findByEmail(name)
-                .orElseThrow(() -> new BadRequestException(USER_FIELD , USER_NOT_FOUND));
+                .orElseThrow(() -> new BadRequestException(USER_FIELD, USER_NOT_FOUND));
 
-        if(!passwordEncoder.matches(request.getOldPassword(), user.getPassword())){
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
             throw new BadRequestException(PASSWORD_FIELD, PASSWORD_INCORRECT);
         }
 
-        if(!request.getNewPassword().equals(request.getConfirmPassword())){
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
             throw new BadRequestException(PASSWORD_FIELD, PASSWORD_NOT_MATCH);
         }
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-        return "Password changed successfully";
+        return new ApiResponse("Password changed successfully", true);
     }
 
-    public void updateUserImage(String email, String imageUrl) {
+    public ApiResponse updateUserImage(String email, String imageUrl) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         user.setImageUrl(imageUrl);
         userRepository.save(user);
+        return new ApiResponse("Profile image updated successfully", true);
     }
 }
