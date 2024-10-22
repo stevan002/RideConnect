@@ -9,4 +9,7 @@ public class ErrorMessage {
     public static final String EMAIL_NOT_FOUND = "Email not found";
     public static final String PHONE_NUMBER_ALREADY_EXISTS = "Phone number already exists";
     public static final String USER_NOT_FOUND = "User not found";
+    public static final String RIDE_NOT_FOUND = "Ride not found";
+    public static final String DELETE_DENIDE = "Delete denide";
+    public static final String CAR_NOT_FOUND = "Car not found";
 }

@@ -5,8 +5,6 @@ import com.rideconnect.server.model.Car;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-import java.util.List;
-
 @Mapper
 public interface CarMapper {
     CarMapper CAR_MAPPER = Mappers.getMapper(CarMapper.class);

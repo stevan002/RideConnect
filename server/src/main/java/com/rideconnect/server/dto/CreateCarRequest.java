@@ -19,8 +19,4 @@ public class CreateCarRequest {
     @NotBlank(message = "License plate cannot be empty")
     @Pattern(regexp = "^[A-Z0-9-]{2,10}$", message = "License plate format is invalid")
     private String licencePlate;
-
-    @NotNull(message = "User ID cannot be null")
-    @Min(value = 1, message = "User ID must be a positive number")
-    private Long userId;
 }

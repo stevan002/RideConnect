@@ -38,10 +38,5 @@ public class Car {
             message = "License plate must be between 1 and 10 characters and can contain uppercase letters, numbers, spaces, and hyphens"
     )
     private String licensePlate;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    @NotNull(message = "User cannot be null")
-    private User user;
 }
 

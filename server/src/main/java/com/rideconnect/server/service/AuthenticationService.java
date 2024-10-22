@@ -12,8 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import static com.rideconnect.server.constant.ErrorMessage.EMAIL_NOT_FOUND;
-import static com.rideconnect.server.constant.ErrorMessage.PASSWORD_INCORRECT;
+import static com.rideconnect.server.constant.ErrorMessage.*;
 import static com.rideconnect.server.constant.FieldName.EMAIL_FIELD;
 import static com.rideconnect.server.constant.FieldName.PASSWORD_FIELD;
 
@@ -29,7 +28,7 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(LoginRequest request) throws BadRequestException {
 
         User user = repository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new BadRequestException(EMAIL_FIELD , EMAIL_NOT_FOUND));
+                .orElseThrow(() -> new BadRequestException(EMAIL_FIELD , EMAIL_INCORRECT));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new BadRequestException(PASSWORD_FIELD , PASSWORD_INCORRECT);
