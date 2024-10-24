@@ -1,5 +1,6 @@
 package com.rideconnect.server.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.rideconnect.server.model.enumeration.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -59,6 +60,7 @@ public class User implements UserDetails {
     private UserRole role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Ride> rides;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -19,6 +19,7 @@ public class RatingsReviews {
     @Column(nullable = false)
     private int rating;
 
+    @Column(nullable = false)
     private String review;
 
     @ManyToOne

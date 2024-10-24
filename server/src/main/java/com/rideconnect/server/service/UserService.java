@@ -63,12 +63,12 @@ public class UserService {
         return new ApiResponse("Password changed successfully", true);
     }
 
-    public ApiResponse updateUserImage(String email, String imageUrl) {
+    public void updateUserImage(String email, String imageUrl) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         user.setImageUrl(imageUrl);
         userRepository.save(user);
-        return new ApiResponse("Profile image updated successfully", true);
+        new ApiResponse("Profile image updated successfully", true);
     }
 }
